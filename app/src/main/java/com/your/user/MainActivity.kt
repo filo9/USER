@@ -1,5 +1,4 @@
 package com.your.user
-
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioTrack
@@ -12,13 +11,15 @@ import kotlin.math.sin
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
     private val sampleRate = 44100
-    private val duration = 400  // 每个比特的持续时间 (ms)
-    private val freq0 = 500     // 表示“0”的频率
-    private val freq1 = 5000    // 表示“1”的频率
+    private val duration = 500  // 每个比特的持续时间 (ms)
+    private val freq0 = 400     // 表示“0”的频率
+    private val freq1 = 3000    // 表示“1”的频率
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -27,18 +28,21 @@ class MainActivity : AppCompatActivity() {
             val password = binding.etWifiPassword.text.toString()
             val message = "$account:$password"
 
-            // 将 Wi-Fi 信息转换为二进制并发送
-            val binaryData = stringToBinary(message)
+            // 添加起始和结束标志后将 Wi-Fi 信息转换为二进制并发送
+            val binaryData = stringToBinaryWithMarkers(message)
             sendAudioSignal(binaryData)
         }
     }
 
-    private fun stringToBinary(text: String): String {
-        return text.toCharArray().joinToString(separator = "") {
+    // 将字符串转换为二进制字符串，添加起始和结束标志
+    private fun stringToBinaryWithMarkers(text: String): String {
+        val message = "#$text#"
+        return message.toCharArray().joinToString(separator = "") {
             String.format("%8s", Integer.toBinaryString(it.code)).replace(' ', '0')
         }
     }
 
+    // 生成并发送音频信号
     private fun sendAudioSignal(binaryData: String) {
         val bufferSize = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT)
         val audioTrack = AudioTrack(
@@ -62,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         audioTrack.release()
     }
 
+    // 生成特定频率的音频数据
     private fun generateTone(freq: Int, durationMs: Int): ShortArray {
         val numSamples = durationMs * sampleRate / 1000
         val buffer = ShortArray(numSamples)
