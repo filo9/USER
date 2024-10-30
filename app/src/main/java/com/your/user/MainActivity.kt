@@ -13,9 +13,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val sampleRate = 44100
-    private val duration = 300  // 每个比特的持续时间 (ms)
+    private val duration = 400  // 每个比特的持续时间 (ms)
     private val freq0 = 500     // 表示“0”的频率
-    private val freq1 = 2500    // 表示“1”的频率
+    private val freq1 = 5000    // 表示“1”的频率
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
